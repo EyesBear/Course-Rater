@@ -1,0 +1,28 @@
+#header {
+	background-color: #6599FF;
+	text-align:center;
+	padding: 5px;
+}
+
+#nav {
+	background-color: #FF9900;
+	line-height: 30px;
+	height: 500px;
+	width: 200px;
+	float: left;
+	padding: 5px;
+}
+
+#content {
+	background-color: #FFDE00;
+	float: left;
+	height: 490px;
+	padding: 10px;
+}
+
+#footer {
+	background-color: #097054;
+	clear: both;
+	text-align: center;
+	padding: 5px;
+}

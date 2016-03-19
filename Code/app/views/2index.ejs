@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Home</title>
+</head>
+<!-- META -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+<style>
+    html { overflow-y:scroll; }
+    body { padding-top:50px; }
+</style>
+
+<!-- SPELLS -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script >
+    angular.module('index', [])
+    .controller('IndexController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+
+        $scope.Data = {
+            code: '',
+            userid:''
+        };
+
+        $scope.Rate = function(code,userid) {
+     		sessionStorage.setItem('code', code);
+     		sessionStorage.setItem('userid', userid);
+			$window.location.href= '/rate';
+        };
+
+    }]);
+</script>
+<body ng-app="index" ng-controller="IndexController">
+	<!-- If a user is authenticated, display the user's full name , otherwise display the authentication links -->
+	<% if ( userFullName ) { %>
+		<h2>Hello <%=userFullName%> </h2> 
+		<a href="/signout">Sign out</a>
+		<a href='/create'>Create a course</a>
+		<br>
+		<ul>
+		<% courses.forEach(function(course){ %>
+			<li><%=course.code%>: <%=course.name%>, <%=course.instructor%>, workload: <%=course.workload%>, test: <%=course.test%>, reading: <%=course.reading%>, writing <%=course.writing%>, interest <%=course.interest%>, difficulty <%=course.difficulty%>, time <%=course.time%>.<br>Comments: <%=course.comments%> <button ng-click="Rate('<%=course.code%>','<%=userid%>')">Rate it</button></li> 
+		<% }); %>
+		</ul>
+	<% } else { %>
+		<a href="/signup">Signup</a>
+		<a href="/signin">Signin</a>
+	<% } %>
+
+</body>
+</html>

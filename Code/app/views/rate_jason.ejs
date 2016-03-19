@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+    <title>Rate a Course</title>
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <style>
+        html { overflow-y:scroll; }
+        body { padding-top:50px; }
+    </style>
+
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script >
+        angular.module('rating', [])
+        .controller('RatingController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+            $scope.formData = {
+              userid: '',
+              code:  '',
+              name: '',
+              comment: '',
+              rating: {
+                difficulty: 0,
+                workload: 0,
+                interest: 0,
+                reading: 0,
+                time: 0,
+                test: 0,
+                writing: 0
+              }
+            }
+            $scope.currentCourse = '';          
+            $scope.formData.code = sessionStorage.getItem('code');
+            $scope.formData.userid = sessionStorage.getItem('userid');
+            
+            $scope.Rate = function() {
+                $http.post('/rate', $scope.formData)
+                    .success(function(data) {
+                        alert('success!');
+                        $window.location.href = '/';
+                    })
+                    .error(function(data) {
+                        console.log('Error: ' + data);
+                        alert('Please signin before you rate a course.');
+                    });
+            };
+
+            $http.get('/search')
+                .success(function(data) {
+                    $scope.courses = data;
+                    for (var course in $scope.courses){
+                        if ($scope.courses[course].code == $scope.formData.code){
+                            $scope.currentCourse = $scope.courses[course]
+                            console.log("it is: " + $scope.currentCourse);
+                        }
+                    }
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    alert('Please signin before you rate a course.');
+                });
+
+        }]);
+    </script>
+
+</head>
+
+<body ng-app="rating" ng-controller="RatingController">
+    <div class="container">
+
+        <div class="jumbotron text-center">
+            <h2>What do you think of {{formData.code}}: name: {{currentCourse.name}}, instructor: {{currentCourse.instructor}}?</h2>
+    
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2 text-center">
+                <form>
+                    <div class="form-group">
+
+                        <!-- BIND THESE VALUES TO 'formData' IN ANGULAR -->
+                        <p> Difficulty: </p>
+                        <input type="radio" ng-model="formData.rating.difficulty" value = "5"> 5
+                        <input type="radio" ng-model="formData.rating.difficulty" value = "4"> 4
+                        <input type="radio" ng-model="formData.rating.difficulty" value = "3"> 3
+                        <input type="radio" ng-model="formData.rating.difficulty" value = "2"> 2
+                        <input type="radio" ng-model="formData.rating.difficulty" value = "1"> 1
+                        <br>
+                        <p> Course Workload </p>
+                        <input type="radio" ng-model="formData.rating.workload" value = "5"> 5
+                        <input type="radio" ng-model="formData.rating.workload" value = "4"> 4
+                        <input type="radio" ng-model="formData.rating.workload" value = "3"> 3
+                        <input type="radio" ng-model="formData.rating.workload" value = "2"> 2
+                        <input type="radio" ng-model="formData.rating.workload" value = "1"> 1
+                        <br>
+                        <p> Interest Level </p>
+                        <input type="radio" ng-model="formData.rating.interest" value = "5"> 5
+                        <input type="radio" ng-model="formData.rating.interest" value = "4"> 4
+                        <input type="radio" ng-model="formData.rating.interest" value = "3"> 3
+                        <input type="radio" ng-model="formData.rating.interest" value = "2"> 2
+                        <input type="radio" ng-model="formData.rating.interest" value = "1"> 1
+                        <br>
+                        <p> Reading </p>
+                        <input type="radio" ng-model="formData.rating.reading" value = "5"> 5
+                        <input type="radio" ng-model="formData.rating.reading" value = "4"> 4
+                        <input type="radio" ng-model="formData.rating.reading" value = "3"> 3
+                        <input type="radio" ng-model="formData.rating.reading" value = "2"> 2
+                        <input type="radio" ng-model="formData.rating.reading" value = "1"> 1
+                        <br>
+                        <p> Time Requirement per Week </p>
+                        <input type="radio" ng-model="formData.rating.time" value = "5"> 5
+                        <input type="radio" ng-model="formData.rating.time" value = "4"> 4
+                        <input type="radio" ng-model="formData.rating.time" value = "3"> 3
+                        <input type="radio" ng-model="formData.rating.time" value = "2"> 2
+                        <input type="radio" ng-model="formData.rating.time" value = "1"> 1
+                        <br>
+                        <p> Test Difficulty </p>
+                        <input type="radio" ng-model="formData.rating.test" value = "5"> 5
+                        <input type="radio" ng-model="formData.rating.test" value = "4"> 4
+                        <input type="radio" ng-model="formData.rating.test" value = "3"> 3
+                        <input type="radio" ng-model="formData.rating.test" value = "2"> 2
+                        <input type="radio" ng-model="formData.rating.test" value = "1"> 1
+                        <br>
+                        <p> Writing </p>
+                        <input type="radio" ng-model="formData.rating.writing" value = "5"> 5
+                        <input type="radio" ng-model="formData.rating.writing" value = "4"> 4
+                        <input type="radio" ng-model="formData.rating.writing" value = "3"> 3
+                        <input type="radio" ng-model="formData.rating.writing" value = "2"> 2
+                        <input type="radio" ng-model="formData.rating.writing" value = "1"> 1
+                        <br><br>
+                        Comment: <br />
+                        <textarea rows="5" cols="50" name="user_comment" ng-model="formData.comment">
+                        </textarea>
+                        <br><br>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="Rate()">Submit</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

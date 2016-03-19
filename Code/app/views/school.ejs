@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- META -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+
+        <script>
+            angular.module('school', [])
+            .controller('SchoolController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+                $scope.schoolName = "<%= school%>" || "Test University";//sessionStorage.getItem('school') || "Test University";
+
+                $("title").html($scope.schoolName);
+
+                //$scope.courses = [{name : "CSC373", rating : 2.5}, {name : "CSC458", rating : 3.0}, {name : "CSC301", rating : 5.0}, {name : "CSC324", rating : 4.0}, {name : "CSC258", rating : 0.3}, {name: "CSC369", rating : 1.0}];
+                $scope.courses = []
+                <% courses.forEach(function(course){ %>
+                                    $scope.courses.push({name: "<%= course.name%>", rating: <%= course.rating %>})
+                                    <% }); %>
+                $scope.unfilteredCourses = $scope.courses;
+
+
+                $scope.order = {name : 1, rating : 1}
+
+                $scope.searchText = ''
+
+                $scope.changeOrder = function(orderBy){
+                    $scope.order[orderBy] = $scope.order[orderBy] * -1
+
+                    if(orderBy == "name"){
+                        $scope.courses.sort(function(a, b){return a.name.localeCompare(b.name)})
+
+                        if($scope.order.name == -1){
+                            $scope.courses.reverse()
+                        }
+                    }else if(orderBy == "rating"){
+                        $scope.courses.sort(function(a, b){return a.rating - b.rating})
+
+                        if($scope.order.rating == -1){
+                            $scope.courses.reverse()
+                        }
+                    }
+                    $scope.unfilteredCourses = $scope.courses;
+                    $scope.$apply()
+                }
+
+                $scope.getColor = function(rating){
+                    if(rating < 3){
+                        return {color : "#D40C0F"};
+                    }else if (rating < 4){
+                        return {color : "#D4A400"};
+                    }else{
+                        return {color : "#3DD40F"};
+                    }
+                }
+
+                $scope.filter = function(){
+                    $scope.courses = $scope.unfilteredCourses;
+
+                    $scope.courses = $scope.courses.filter(function(x){
+                        return x.name.toUpperCase().indexOf($scope.searchText.toUpperCase()) > -1;
+                    })
+
+                    console.log($scope.courses);
+
+                    $scope.$apply()
+                }
+
+                $scope.chooseCourse = function(course){
+                    sessionStorage.setItem("code", course);
+                    document.location.href = "/display"
+                }
+
+            }]);
+        </script>
+
+
+        <title>{{schoolName}}</title>
+        
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" type="text/css" href="/css/schoolpage.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap-social.css">
+
+        <style>
+            html { overflow-y:scroll; }
+            body { padding-top:10px; padding-left: 10px !important;}
+        </style>
+    </head>
+
+    <body ng-app="school" ng-controller="SchoolController" class="container-fluid">
+        <% include ./partials/header %>
+        <div class="row">
+            <div id="title-holder" class="col-md-12 centered">
+                <h1 id="title">
+                    {{schoolName}}
+                </h1>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-12 centered">
+                <h3>
+                    Courses
+                </h3>
+            </div>
+        </div>
+        <div id="search" class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <!--<div class="input-group">-->
+                    <input type="text" id="search-input" class="form-control" ng-change="filter()" ng-model="searchText" placeholder="Enter a course">
+                    <!--<span class="input-group-btn">
+                        <button type="button" class="btn btn-success" ng-click="search()">Search</button>
+                    </span>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div id="labels" class="row">
+            <div class="col-md-2 col-md-offset-4" ng-click="changeOrder('name')">
+                <p class="order-mod">Course Name</p>
+            </div>
+            <div style="text-align: right;" class="col-md-2" ng-click="changeOrder('rating')">
+                <p class="order-mod">Overall Rating</p>
+            </div>
+        </div>
+        <div id="courses">
+            <div class="row" ng-repeat="course in courses">
+                <div class="col-md-4 col-md-offset-4 course-holder" ng-click="chooseCourse(course.name)">
+                    <div class="course">
+                        {{course.name}}
+                    </div>
+                    <div class="rating" ng-style="getColor(course.rating)">
+                        {{course.rating | number: 1}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

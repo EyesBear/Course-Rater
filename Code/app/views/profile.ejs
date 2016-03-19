@@ -1,0 +1,89 @@
+ <!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width">
+	<title>Profile Page</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="/css/profile-style.css">
+
+	<script>
+		function setSchoolPreference(){
+			var pref = $("#schoolPref").val()
+
+			if(!pref){
+				displayError("Error: No school preference chosen!")
+				return
+			}
+
+			$.ajax({
+				type: "post",
+				data: {settings: {schoolPref: pref}},
+				url: "./profile",
+				success: function(data){
+					location.reload()
+				},
+				error: function(data){
+					displayError(data.responseJSON.message)
+				}
+			})
+		}
+
+		function displayError(message){
+			console.log(message)
+			$("#error").html(message)
+			$("#error").show()
+		}
+	</script>
+
+</head>
+<body>
+  	<div>
+		<div id="profile-header" class="row">
+			<div class="col-lg-1">
+				<button id="back-button" class="btn" onclick="document.location.href = '/'">Back Home</button>
+			</div>
+			<div class="col-lg-10" style="text-align:center;">
+				<h2 class="blue">Hello <%=userFullName%></h2> 
+			</div>
+		</div>
+		<div class="row">
+			<div id="profile-holder" class="col-md-4 col-md-offset-4">
+				<img id="profile-pic" src="<%=userPicture%>">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<h5 id="email" style="text-align:center;" class="blue">Email: <%=userEmail%></h5>
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="settings" class="col-md-6 col-md-offset-3">
+				<h4 style="text-align:center;">Settings</h4>
+				<div id="sub-settings">
+					<label id="error" class="error">Error</label><br/>
+					<label class="blue">Preferred School</label>
+					<div class="input-group">
+				    	<input id="schoolPref" type="text" class="form-control" placeholder="<%= schoolPref%>">
+				        <span class="input-group-btn">
+				        	<button class="btn btn-default form-control" type="button" onclick="setSchoolPreference()">Set School Preference</button>
+				      	</span>
+				    </div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+</body>
+</html>

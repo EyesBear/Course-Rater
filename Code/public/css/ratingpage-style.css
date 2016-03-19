@@ -1,0 +1,71 @@
+body {
+	font-family: 'Helvetica Neue',Roboto;
+ 	font-weight: light;
+ 	background-color: #ffffff;
+ 	height: 100%;
+}
+
+/* Buttons */
+.btn {
+	background-image: none;
+	background-color: #ffffff;
+	border: 1px solid #3885E7;
+	color: #3885E7;
+	width: 100px;
+	height: 40px;
+	font-size: 14px;
+}
+
+.btn:hover {
+	background-image: none;
+	background-color: #3885E7;
+	border: 1px solid #3885E7;
+	color: #ffffff;
+}
+
+.btn:active {
+	background-image: none;
+	background-color: #275DA1;
+	border: 1px solid #275DA1;
+	color: #ffffff;
+}
+
+.btn:active:hover {
+	background-image: none;
+	background-color: #275DA1;
+	border: 1px solid #275DA1;
+	color: #ffffff;
+}
+
+#form {
+	padding-left: 100px;
+}
+
+#c_div {
+	margin: 50px auto 0 auto;
+}
+
+#comments {
+	height: 60px;
+	width: 100%;
+   	border: 1px solid #3885E7;
+   	text-align: center;
+   	margin: 0 auto 0 auto;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+}
+
+#header {
+	background-color: #ffffff;
+	text-align: center;
+	font-size: 200%;
+	color: #3885E7;
+	padding-bottom: 30px;
+	padding-top: 20px;
+}
+
+/* Labels and radio btns */
+label {
+	color: #3885E7;
+}

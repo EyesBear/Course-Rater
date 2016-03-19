@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Use the 'title' property to render a page title  -->
+	<title><%= title %></title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/bootstrap-social.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+  	<!-- Display flash messages  -->
+	<% for(var i in messages) { %>
+	   <div class="flash"><%= messages[i] %></div>
+	<% } %>
+
+	<!-- Render the signin form  -->
+	<form action="/signin" method="post" class="col-sm-3">
+		<div>
+			<label>Email:</label>
+			<input type="text" name="email" />
+		</div>
+		<div>
+			<label>Password	:</label>
+			<input type="password" name="password" />
+		</div>
+		<div>
+			<input type="submit" value="Sign In" />
+		</div>
+	</form>
+
+  <div class="form-group" >
+    <div class="col-sm-3" style="clear:both;"><a href="/auth/facebook" class="btn btn-block btn-facebook btn-social"><i class="fa fa-facebook"></i>Sign in with Facebook</a><a href="/auth/twitter" class="btn btn-block btn-twitter btn-social"><i class="fa fa-twitter"></i>Sign in with Twitter</a><a href="/auth/google" class="btn btn-block btn-google btn-social"><i class="fa fa-google-plus"></i>Sign in with Google</a><a href="/auth/github" class="btn btn-block btn-github btn-social"><i class="fa fa-github"></i>Sign in with GitHub</a><a href="/auth/linkedin" class="btn btn-block btn-linkedin btn-social"><i class="fa fa-linkedin"></i>Sign in with LinkedIn</a><a href="/auth/instagram" class="btn btn-block btn-instagram btn-social"><i class="fa fa-instagram"></i>Sign in with Instagram</a></div>
+  </div>
+</body>
+</html>

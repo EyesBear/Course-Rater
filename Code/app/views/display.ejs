@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta name="viewport" content="width=device-width">
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"><!-- load bootstrap -->
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.css">
+        <link data-require="fontawesome@*" data-semver="4.1.0" rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+
+
+        <link rel="stylesheet" type="text/css" href="css/displaypage-style.css">
+		<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.js"></script>
+
+		<script type="text/javascript">
+        angular.module('display', ['ngMaterial'])
+        .config(function($mdThemingProvider) {
+            $mdThemingProvider.theme('default')
+                .primaryPalette('blue')
+    
+        })
+        .controller('DisplayController', ['$scope', '$http', '$window', '$mdDialog', function($scope, $http, $window, $mdDialog) {
+            $scope.formData = {
+              userid: '',
+              code:  '',
+              name: '',
+              comment:  {
+                upvotes: 0,
+                content: ''},
+              rating: {
+                difficulty: 0,
+                workload: 0,
+                interest: 0,
+                reading: 0,
+                time: 0,
+                test: 0,
+                writing: 0
+              }
+            }
+            $scope.ratings = [];
+            $scope.flag = {flag:'',id:'',init:true,cid:''};
+            $scope.currentCourse = '';          
+            $scope.formData.code = sessionStorage.getItem('code');
+            
+            console.log('Error: ' + $scope.formData.code);
+          $scope.changeVote = function(vote, flag, a, idd, pos){
+            // $scope.vote = vote==flag?'None':flag;
+            // $scope.currentCourse.comments.rating_obj.upvotes += 1;
+                if ($scope.formData.userid != ''){
+                    if (flag == 'initial'){
+                        if ($scope.ratings[a].comment.downvoted.indexOf($scope.formData.userid) !== -1 && pos == 'down'){
+                            $scope.flag.init = false;
+                            return 'down';
+                        }  
+                        if ($scope.ratings[a].comment.upvoted.indexOf($scope.formData.userid) !== -1 && pos == 'up'){
+                            $scope.flag.init = false;
+                            return 'up';
+                        }  
+                        return '';
+                    }
+                    if (flag == 'up'){
+                        if ($scope.ratings[a].comment.upvoted.indexOf($scope.formData.userid) !== -1){
+                            console.log('already upvoted.');
+                            return;
+                        }
+                        if ($scope.ratings[a].comment.downvoted.indexOf($scope.formData.userid) !== -1){
+                            $scope.ratings[a].comment.downvoted.splice($scope.ratings[a].comment.downvoted.indexOf($scope.formData.userid), 1 );
+                            $scope.flag.init = false;
+                        }                    
+                       $scope.ratings[a].comment.upvotes += 1; 
+                       $scope.ratings[a].comment.upvoted.push($scope.formData.userid);
+                   } else{
+                        if ($scope.ratings[a].comment.downvoted.indexOf($scope.formData.userid) !== -1){
+                            console.log('already downvoted.');
+                            return;
+                        }
+                        if ($scope.ratings[a].comment.upvoted.indexOf($scope.formData.userid) !== -1){
+                            $scope.ratings[a].comment.upvoted.splice($scope.ratings[a].comment.downvoted.indexOf($scope.formData.userid), 1 );
+                            $scope.flag.init = false;
+                        }  
+                        $scope.ratings[a].comment.upvotes -= 1; 
+                        $scope.ratings[a].comment.downvoted.push($scope.formData.userid); 
+                   }
+                    $scope.flag.cid = $scope.formData.userid;
+                    console.log($scope.ratings[a].comment.upvotes)
+                    console.log(idd);
+                    $scope.flag.flag = flag;
+                    $scope.flag.id = idd;
+
+                    $http.post('/vote',$scope.flag)
+                        .success(function(data) {
+                            if (flag == 'up'){
+                                return 'up';
+                            } return 'down';
+                        })
+                        .error(function(data) {
+                            console.log('Error: ' + data);
+                        });                                
+                }
+
+          };
+
+            $scope.Rate = function() {
+                sessionStorage.setItem('code', $scope.formData.code);
+                sessionStorage.setItem('userid', $scope.formData.userid);
+                $http.post('/rate', $scope.formData)
+                    .success(function(data) {
+                        $window.location.href = '/display';
+                    })
+                    .error(function(data) {
+                        console.log('Error: ' + data);
+                        alert('Please signin before you rate a course.');
+                    });
+            };
+
+            $scope.openPop = function() {
+                $('#myModal').modal('show');
+            };
+
+            $scope.showAdvanced = function(ev) {
+                $mdDialog.show({
+                    controller: DialogController,
+                    template: '<md-dialog ng-cloak>' +
+                                    '<form>' +
+                                        '<md-toolbar>' +
+                                            '<div class="md-toolbar-tools">' +
+                                                '<h2>Feedback</h2>' +
+                                                '<span flex></span>' +
+                                            '</div>' +
+                                        '</md-toolbar>' +
+
+                                        '<md-dialog-content style="max-width:800px;max-height:810px; overflow:hidden;  ">' +
+                                            '<div class="md-dialog-content" style="overflow:hidden; " >' +
+                                            '<p>Difficulty: <span class="radioValue">{{formData.rating.difficulty}}</span></p>' +
+                                            '<md-radio-group ng-model="formData.rating.difficulty" layout="row">' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="5">5</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="4">4</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="3">3</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="2">2</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="1">1</md-radio-button>' +
+                                            '</md-radio-group>' +
+                                            
+                                            '<p>Workload: <span class="radioValue">{{formData.rating.workload}}</span></p>' +
+                                            '<md-radio-group ng-model="formData.rating.workload" layout="row">' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="5">5</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="4">4</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="3">3</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="2">2</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="1">1</md-radio-button>' +
+                                            '</md-radio-group>' +
+                                            
+                                            '<p>Interest: <span class="radioValue">{{formData.rating.interest}}</span></p>' +
+                                            '<md-radio-group ng-model="formData.rating.interest" layout="row">' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="5">5</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="4">4</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="3">3</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="2">2</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="1">1</md-radio-button>' +
+                                            '</md-radio-group>' +
+                                            
+                                            '<p>Reading: <span class="radioValue">{{formData.rating.reading}}</span></p>' +
+                                            '<md-radio-group ng-model="formData.rating.reading" layout="row">' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="5">5</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="4">4</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="3">3</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="2">2</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="1">1</md-radio-button>' +
+                                            '</md-radio-group>' +
+                                            
+                                            '<p>Writing: <span class="radioValue">{{formData.rating.writing}}</span></p>' +
+                                            '<md-radio-group ng-model="formData.rating.writing" layout="row">' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="5">5</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="4">4</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="3">3</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="2">2</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="1">1</md-radio-button>' +
+                                            '</md-radio-group>' +
+                                            
+                                            '<p>Time: <span class="radioValue">{{formData.rating.time}}</span></p>' +
+                                            '<md-radio-group ng-model="formData.rating.time" layout="row">' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="5">5</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="4">4</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="3">3</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="2">2</md-radio-button>' +
+                                                '<md-radio-button style="margin:0 10px 10px 10px;" value="1">1</md-radio-button>' +
+                                            '</md-radio-group>' +
+                                            '</div>' +
+
+                                            '<md-input-container class="md-block">' +
+                                                '<label>Comments</label>' +
+                                                '<textarea ng-model="formData.comment.content" columns="1" rows="5"></textarea>' +
+                                            '</md-input-container>' +
+                                        '</md-dialog-content>' +
+                                    '</form>' +
+                                        '<md-dialog-actions style="position:static" layout="row" layout-align="center center">' +
+                                            '<md-button id="submit-btn" ng-click="Rate()">Submit</md-button>' +
+                                            '<md-button id="close-btn" ng-click="cancel()">Close</md-button>' +
+                                        '</md-dialog-actions>' +
+                                '</md-dialog>',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true
+                });
+            };
+            
+            function DialogController($scope, $mdDialog) {
+                $scope.formData = {
+                  userid: '',
+                  code:  '',
+                  name: '',
+                  comment: '',
+                  rating: {
+                    difficulty: 0,
+                    workload: 0,
+                    interest: 0,
+                    reading: 0,
+                    time: 0,
+                    test: 0,
+                    writing: 0
+                  }
+                }
+                
+                $scope.currentCourse = '';          
+                $scope.formData.code = sessionStorage.getItem('code');
+                $scope.formData.userid = sessionStorage.getItem('userid');
+                
+                $scope.hide = function() {
+                    $mdDialog.hide();
+                };
+                
+                $scope.cancel = function() {
+                    $mdDialog.cancel();
+                };
+
+                $scope.Rate = function() {
+                    sessionStorage.setItem('code', $scope.formData.code);
+                    sessionStorage.setItem('userid', $scope.formData.userid);
+                    $http.post('/rate', $scope.formData)
+                        .success(function(data) {
+                            $window.location.href = '/display';
+                        })
+                        .error(function(data) {
+                            console.log('Error: ' + data);
+                            alert('Please signin before you rate a course.');
+                        });
+                };
+            }
+
+            $http.get('/search')
+                .success(function(data) {
+                    $scope.courses = data.courses;
+                    for (var rating in data.ratings){
+                        if (data.ratings[rating].course_code == $scope.formData.code){
+                            $scope.ratings.push(data.ratings[rating]);
+                        }
+                    }
+                    for (var course in $scope.courses){
+                        if ($scope.courses[course].code == $scope.formData.code){
+                            $scope.currentCourse = $scope.courses[course]
+                        }
+                    }
+                    $scope.formData.userid = data.id;
+                    console.log($scope.currentCourse.comments)
+                })
+
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                    alert('Please signin before you rate a course.');
+                });
+
+        }]);
+
+		</script>
+
+
+	</head>
+	
+	<body ng-app="display" ng-controller="DisplayController" layout="column" ng-cloak>
+		<div id="container">
+			<div id="header">
+				<div id="course_code" class="col-mg-12">
+					<p id="course-code">{{currentCourse.code}}</p>
+				</div>
+				<div>
+					<span id="course_details">{{currentCourse.name}}</span>
+                    <span id="stuff"> @ </span>
+                    <span id="course_details">{{currentCourse.school}}</span>
+                    <span id="stuff"> with </span>
+                    <span id="course_details">{{currentCourse.instructor}}</span>
+				</div>         
+			</div>
+
+			<div id="ratings_section">
+                <div id="ratings_row">
+                    <md-card id="rating_box" class="card card-1">
+                        <p id="rating_lablel">Difficulty</p>
+                        <p id="rating_value" ng-class="{bad: currentCourse.difficulty >= 4, good: currentCourse.difficulty <= 2, neutral: currentCourse.difficulty > 2 && currentCourse.difficulty < 4}">{{currentCourse.difficulty | number:1}}</p>
+                    </md-card>     
+                    <div id="rating_box" class="card card-1">
+                        <p id="rating_lablel">Writing</p>
+                        <p id="rating_value" ng-class="{bad: currentCourse.writing >= 4, good: currentCourse.writing <= 2, neutral: currentCourse.writing > 2 && currentCourse.writing < 4}">{{currentCourse.writing | number:1}}</p>
+                    </div> 
+                </div>
+                <div id="ratings_row">
+                    <div id="rating_box" class="card card-1">
+                        <p id="rating_lablel">Reading</p>
+                        <p id="rating_value" ng-class="{bad: currentCourse.reading >= 4, good: currentCourse.reading <= 2, neutral: currentCourse.reading > 2 && currentCourse.reading < 4}">{{currentCourse.reading | number:1}}</p>
+                    </div> 
+                    <div id="rating_box" class="card card-1">
+                        <p id="rating_lablel">Workload</p>
+                        <p id="rating_value" ng-class="{bad: currentCourse.workload >= 4, good: currentCourse.workload <= 2, neutral: currentCourse.workload > 2 && currentCourse.workload < 4}">{{currentCourse.workload | number:1}}</p>
+                    </div> 
+                </div>
+                <div id="ratings_row">
+                    <div id="rating_box" class="card card-1">
+                        <p id="rating_lablel">Time</p>
+                        <p id="rating_value" ng-class="{bad: currentCourse.time >= 4, good: currentCourse.time <= 2, neutral: currentCourse.time > 2 && currentCourse.time < 4}">{{currentCourse.time | number:1}}</p>
+                    </div> 
+                    <div id="rating_box" class="card card-1">
+                        <p id="rating_lablel">Interest</p>
+                        <p id="rating_value" ng-class="{good: currentCourse.interest >= 4, bad: currentCourse.interest <= 2, neutral: currentCourse.interest > 2 && currentCourse.interest < 4}">{{currentCourse.interest | number:1}}</p>
+                    </div> 
+                </div>
+			</div>
+
+            <div id="btn_section">
+                <% if ( locals.userFullName ) { %>
+                    <md-button id="rate-btn" class="md-raised md-primary" ng-click="showAdvanced($event)">Rate</md-button>
+                <% } %>
+            </div>
+            
+            <div id="comments_section" class="row">
+                <div id="comment_box" ng-repeat="rating_obj in ratings">
+                    <md-card id="comment_card">
+                        <md-card-content id="comment_header">
+                            <div style="float:left; text-align: center; margin-right:10px;">
+                                <i title="Up Votes" ng-click="changeVote(vote, 'up', $index, rating_obj._id,'' )" class="fa fa-arrow-circle-up fa-2x" ng-class="changeVote(vote, 'initial', $index, rating_obj._id,'up')"></i>
+                                <div id='{{$index}}' >{{rating_obj.comment.upvotes}}</div>
+                                <i title="Down Votes" ng-click="changeVote(vote, 'down',$index, rating_obj._id,'')" class="fa fa-arrow-circle-down fa-2x"  ng-class="changeVote(vote, 'initial', $index, rating_obj._id,'down' )"></i>
+                            </div>
+                            <br>
+                            <span id="comment_username">{{rating_obj.user.username}}</span>
+                            <span> : </span>
+                            <span id="comment_time">{{rating_obj.created_at | limitTo:10}}</span>
+                            <p id="comment_text">{{rating_obj.comment.content}}</p>
+                        </md-card-content>
+                    </md-card>
+                </div>
+            </div>
+		</div>
+	</body>
+</html></md-radio-button>' +

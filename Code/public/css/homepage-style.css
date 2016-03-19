@@ -1,0 +1,110 @@
+body {
+	font-family: 'Helvetica Neue',Roboto;
+ 	font-weight: light;
+ 	background-color: #ffffff;
+ 	height:100%;
+}
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+#home-link{
+	color: white;
+}
+
+#title-desc{
+	padding-bottom: 15em;
+}
+
+#main{
+	background-color: #ffffff;
+	position: fixed;
+  	top: 20%;
+  	height: 80%;
+  	width: 100%;
+}
+
+/* header */
+#header{
+	background-color: #ffffff;
+	height: 10%;
+	width: 100%;
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+#footer{
+	height: 20px;
+	position: fixed;
+	width: 100%;
+	bottom: 0px;
+	font-size: 80%;
+	background-color: #ffffff;
+}
+
+.form-control {
+	border: 1px solid #3885E7;
+}
+
+/* sign in popup */
+#signin_title{
+	color: white;
+	font-size: 200%;
+}
+
+#close-btn {
+  color : #E56C5E;
+}
+#close-btn:not([disabled]):hover {
+  background-color: rgba(158, 158, 158, 0.2);
+}
+#close-btn[disabled] {
+  color : rgba(0, 0, 0, 0.26);
+  background-color: transparent;
+}
+
+.modal-header {
+	border-bottom: none;
+	background-color: #3885E7;
+}
+.modal-footer {
+	border-top: none;
+}
+
+/* Texts */
+#title{
+	text-align: center;
+	font-family: 'Helvetica Neue';
+	
+
+	color: #3885E7;
+}
+
+#copyrights {
+	text-align: center;
+	font-family: 'Helvetica Neue';
+	color: #333333;
+}
+
+
+.big{
+	font-size: 5em !important;
+}
+
+.fill { 
+    min-height: 100%;
+    height: 100%;
+}
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.inputdemoBasicUsage .md-datepicker-button {
+  width: 36px; }
+  
+#inputfield{
+	width:600px;
+}
+#md-text-float{
+	font-size: 55px;
+}

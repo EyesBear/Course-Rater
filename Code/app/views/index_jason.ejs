@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Rate My Course
+		</title>
+	</head>
+	
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+
+
+	<link rel="stylesheet" type="text/css" href="../style/homepage-style.css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+	<script src="/views/homepage-script.js"></script>	
+
+	<script type="text/javascript"> 
+		angular.module('index', [])
+		.controller('IndexController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+
+		    $scope.Data = {
+		        code: '',
+		        userid:''
+		    };
+
+		    $scope.search = function() {
+		    	sessionStorage.setItem('code', $scope.Data.code);
+		        // sessionStorage.setItem('userid', userid);
+		        console.log(sessionStorage.getItem('code'));
+		        // $scope.Data.userid=userid;
+		        $window.location.href= '/rate';
+
+	
+		        
+		    };
+
+	}]);</script>
+
+	<body ng-app="index" ng-controller="IndexController">
+		<div id="container" class="container-fluid fill">
+			<div id="header" class="row">
+				<div id="home-link" class="col-md-3">
+					<h4> Course Rater </h4>
+				</div>
+			</div>
+
+			<div id="main" class="row">
+				<div id="title">
+					<div id="title-column" class="col-md-12">
+						<h1 class="big"> Course Rater </h1>
+					</div>
+
+					<div id="title-desc" class="col-md-12">
+						<h4>Rate some courses</h4>
+					</div>
+				</div>
+
+				<div id="search">
+					<div class="col-md-6 col-md-offset-3">
+						<div class="input-group">
+							<input type="text" id="search-input" class="form-control" ng-model="Data.code" placeholder="Enter a course">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-success" ng-click="search()">Search</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="footer" class="row">
+				<div class="col-md-12">
+					<h4>Created for CSC301</h4>
+				</div>
+				<div class="col-md-6 col-md-offset-3">
+					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+					proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				</div>
+		</div>
+	</body>
+</html>

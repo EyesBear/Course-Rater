@@ -1,0 +1,35 @@
+<div id="header" class='row'>
+    <div id="home-link" class="col-md-3">
+        <% if ( locals.userFullName ) { %>
+        <a id="create_btn" href="/profile" class="btn"> <%=userFullName%> </a>
+        <a id="close-btn" href="/signout" class="btn">Sign out</a>
+        <% } else { %>
+        <md-button type="button" class="md-raised md-primary" data-toggle="modal" data-target="#signin_popup">Sign in</md-button>
+        <% } %>
+    </div>
+
+    <div id="signin_popup" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p id="signin_title" class="modal-title">Sign In</p>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group" >
+                        <div style="clear:both;"><a href="/auth/facebook" class="btn btn-block btn-facebook btn-social">
+                            <i class="fa fa-facebook"></i>Sign in with Facebook</a><a href="/auth/twitter" class="btn btn-block btn-twitter btn-social">
+                            <i class="fa fa-twitter"></i>Sign in with Twitter</a><a href="/auth/google" class="btn btn-block btn-google btn-social">
+                            <i class="fa fa-google-plus"></i>Sign in with Google</a><a href="/auth/github" class="btn btn-block btn-github btn-social">
+                            <i class="fa fa-github"></i>Sign in with GitHub</a><a href="/auth/linkedin" class="btn btn-block btn-linkedin btn-social">
+                            <i class="fa fa-linkedin"></i>Sign in with LinkedIn</a><a href="/auth/instagram" class="btn btn-block btn-instagram btn-social">
+                            <i class="fa fa-instagram"></i>Sign in with Instagram</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <md-button id="close-btn" data-dismiss="modal">Close</md-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
