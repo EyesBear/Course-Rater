@@ -1,1 +1,2 @@
-# project-team4-L5101
+# A course rating site based on MEAN stack.
+- decorated with Angular Materialize.
